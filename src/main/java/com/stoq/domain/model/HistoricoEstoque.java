@@ -24,6 +24,16 @@ public class HistoricoEstoque {
         this.qtdeFinal = qtdeFinal;
     }
 
+    public HistoricoEstoque(LocalDate diaHistorico, long idLaboratorio, float qtdeInicial, float qtdeEntradas, float qtdeSaidas, float qtdeAjustes, float qtdeFinal) {
+        this.diaHistorico = diaHistorico;
+        this.idLaboratorio = idLaboratorio;
+        this.qtdeInicial = qtdeInicial;
+        this.qtdeEntradas = qtdeEntradas;
+        this.qtdeSaidas = qtdeSaidas;
+        this.qtdeAjustes = qtdeAjustes;
+        this.qtdeFinal = qtdeFinal;
+    }
+
     public long getIdHistorico() {
         return idHistorico;
     }

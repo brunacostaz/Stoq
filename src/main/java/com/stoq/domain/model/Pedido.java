@@ -24,6 +24,17 @@ public class Pedido {
         this.fornecedorNome = fornecedorNome;
     }
 
+    public Pedido( String numero, long idLaboratorio, long idFuncionario, String status, LocalDate dtCriacao, LocalDate dtRecebimento, String fornecedorNome) {
+        this.idPedido = idPedido;
+        this.numero = numero;
+        this.idLaboratorio = idLaboratorio;
+        this.idFuncionario = idFuncionario;
+        this.status = status;
+        this.dtCriacao = dtCriacao;
+        this.dtRecebimento = dtRecebimento;
+        this.fornecedorNome = fornecedorNome;
+    }
+
     public long getIdPedido() {
         return idPedido;
     }

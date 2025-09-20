@@ -20,6 +20,15 @@ public class Material {
         this.ativo = ativo;
     }
 
+    public Material(String nome, String idLote, String unidadeMedida, int estoqueMinimo, String descricao, String ativo) {
+        this.nome = nome;
+        this.idLote = idLote;
+        this.unidadeMedida = unidadeMedida;
+        this.estoqueMinimo = estoqueMinimo;
+        this.descricao = descricao;
+        this.ativo = ativo;
+    }
+
     public long getIdMaterial() {
         return idMaterial;
     }

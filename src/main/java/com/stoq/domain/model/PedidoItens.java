@@ -22,6 +22,15 @@ public class PedidoItens {
         this.validador = validador;
     }
 
+    public PedidoItens(long idMaterial, float qtdeSolicitada, float qntdeRecebida, float precoUnitario, String lote, LocalDate validador) {
+        this.idMaterial = idMaterial;
+        this.qtdeSolicitada = qtdeSolicitada;
+        this.qntdeRecebida = qntdeRecebida;
+        this.precoUnitario = precoUnitario;
+        this.lote = lote;
+        this.validador = validador;
+    }
+
     public long getIdPedido() {
         return idPedido;
     }

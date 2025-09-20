@@ -18,6 +18,13 @@ public class Estoque {
         this.quantidadeAtual = quantidadeAtual;
     }
 
+    public Estoque(long idLab, long idMaterial, LocalDate dia, float quantidadeAtual) {
+        this.idLab = idLab;
+        this.idMaterial = idMaterial;
+        this.dia = dia;
+        this.quantidadeAtual = quantidadeAtual;
+    }
+
     public long getIdEstoque() {
         return idEstoque;
     }

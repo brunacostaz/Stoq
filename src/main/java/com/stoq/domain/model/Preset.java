@@ -20,6 +20,13 @@ public class Preset {
         this.ativo = ativo;
     }
 
+    public Preset(String nome, String codigo, String descricao, String ativo) {
+        this.nome = nome;
+        this.codigo = codigo;
+        this.descricao = descricao;
+        this.ativo = ativo;
+    }
+
     public long getIdPreset() {
         return idPreset;
     }

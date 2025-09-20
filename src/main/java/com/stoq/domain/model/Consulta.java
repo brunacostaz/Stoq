@@ -26,6 +26,17 @@ public class Consulta {
         this.idPreset = idPreset;
     }
 
+    public Consulta(String pacienteNome, String pacienteDoc, LocalDate dataHora, String status, String obs, LocalDate dtCriacao, long idLab, long idPreset) {
+        this.pacienteNome = pacienteNome;
+        this.pacienteDoc = pacienteDoc;
+        this.dataHora = dataHora;
+        this.status = status;
+        this.obs = obs;
+        this.dtCriacao = dtCriacao;
+        this.idLab = idLab;
+        this.idPreset = idPreset;
+    }
+
     public Long getIdConsulta() {
         return idConsulta;
     }

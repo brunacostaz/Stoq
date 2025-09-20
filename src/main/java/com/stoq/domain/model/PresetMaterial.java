@@ -12,6 +12,11 @@ public class PresetMaterial {
         this.qtdePorExame = qtdePorExame;
     }
 
+    public PresetMaterial(long idItem, float qtdePorExame) {
+        this.idItem = idItem;
+        this.qtdePorExame = qtdePorExame;
+    }
+
     public long getIdPreset() {
         return idPreset;
     }

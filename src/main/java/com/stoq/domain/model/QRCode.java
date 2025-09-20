@@ -26,6 +26,17 @@ public class QRCode {
         this.dtValidacao = dtValidacao;
     }
 
+    public QRCode(long idConsulta, long idEnfermeiro, long idAdminValidador, long idLaboratorio, String codigo, String status, LocalDate dtGeracao, LocalDate dtValidacao) {
+        this.idConsulta = idConsulta;
+        this.idEnfermeiro = idEnfermeiro;
+        this.idAdminValidador = idAdminValidador;
+        this.idLaboratorio = idLaboratorio;
+        this.codigo = codigo;
+        this.status = status;
+        this.dtGeracao = dtGeracao;
+        this.dtValidacao = dtValidacao;
+    }
+
     public long getIdQRCode() {
         return idQRCode;
     }

@@ -26,6 +26,18 @@ public class MovimentacaoEstoque {
         this.obs = obs;
     }
 
+    public MovimentacaoEstoque(LocalDate dataMovimentacao, String tipoMovimentacao, long idLab, long idItem, long idQRCode, long idFuncionario, float qntde, String obs) {
+        this.idMovimentacao = idMovimentacao;
+        this.dataMovimentacao = dataMovimentacao;
+        this.tipoMovimentacao = tipoMovimentacao;
+        this.idLab = idLab;
+        this.idItem = idItem;
+        this.idQRCode = idQRCode;
+        this.idFuncionario = idFuncionario;
+        this.qntde = qntde;
+        this.obs = obs;
+    }
+
     public long getIdMovimentacao() {
         return idMovimentacao;
     }

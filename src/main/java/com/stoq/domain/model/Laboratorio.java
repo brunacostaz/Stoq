@@ -18,6 +18,13 @@ public class Laboratorio {
         this.dtCadastro = dtCadastro;
     }
 
+    public Laboratorio(String nome, String codigo, String ativo, LocalDate dtCadastro) {
+        this.nome = nome;
+        this.codigo = codigo;
+        this.ativo = ativo;
+        this.dtCadastro = dtCadastro;
+    }
+
     public Long getIdLab() {
         return idLab;
     }
