@@ -6,26 +6,24 @@ public class Estoque {
 
     private long idEstoque;
     private long idLab;
-    private long idItem;
+    private long idMaterial;
     private LocalDate dia;
-    private int quantidadeAtual;
-    private String idLote;
+    private float quantidadeAtual;
 
-    public Estoque(long idEstoque, long idLab, long idItem, LocalDate dia, int quantidadeAtual, String idLote) {
+    public Estoque(long idEstoque, long idLab, long idMaterial, LocalDate dia, float quantidadeAtual) {
         this.idEstoque = idEstoque;
         this.idLab = idLab;
-        this.idItem = idItem;
+        this.idMaterial = idMaterial;
         this.dia = dia;
         this.quantidadeAtual = quantidadeAtual;
-        this.idLote = idLote;
     }
 
-    public long getId() {
+    public long getIdEstoque() {
         return idEstoque;
     }
 
-    public void setId(long id) {
-        this.idEstoque = id;
+    public void setIdEstoque(long idEstoque) {
+        this.idEstoque = idEstoque;
     }
 
     public long getIdLab() {
@@ -36,12 +34,12 @@ public class Estoque {
         this.idLab = idLab;
     }
 
-    public long getIdItem() {
-        return idItem;
+    public long getIdMaterial() {
+        return idMaterial;
     }
 
-    public void setIdItem(long idItem) {
-        this.idItem = idItem;
+    public void setIdMaterial(long idMaterial) {
+        this.idMaterial = idMaterial;
     }
 
     public LocalDate getDia() {
@@ -52,19 +50,11 @@ public class Estoque {
         this.dia = dia;
     }
 
-    public int getQuantidadeAtual() {
+    public float getQuantidadeAtual() {
         return quantidadeAtual;
     }
 
-    public void setQuantidadeAtual(int quantidadeAtual) {
+    public void setQuantidadeAtual(float quantidadeAtual) {
         this.quantidadeAtual = quantidadeAtual;
-    }
-
-    public String getIdLote() {
-        return idLote;
-    }
-
-    public void setIdLote(String idLote) {
-        this.idLote = idLote;
     }
 }

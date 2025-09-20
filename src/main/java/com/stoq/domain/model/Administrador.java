@@ -6,8 +6,8 @@ public class Administrador extends Funcionario {
 
     private String nivelAcesso;
 
-    public Administrador(long idFuncionario, String nome, String cpf, String email, String cargo, boolean ativo, LocalDate dtCadastro, long idLab, long idArea, String nivelAcesso) {
-        super(idFuncionario, nome, cpf, email, cargo, ativo, dtCadastro, idLab, idArea);
+    public Administrador(long idFuncionario, String nome, String cpf, String email, String cargo, String ativo, LocalDate dtCadastro, long idLab, String nivelAcesso) {
+        super(idFuncionario, nome, cpf, email, cargo, ativo, dtCadastro, idLab);
         this.nivelAcesso = nivelAcesso;
     }
 

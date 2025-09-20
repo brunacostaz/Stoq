@@ -1,21 +1,22 @@
 package main.java.com.stoq.domain.model;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 public class Consulta {
 
     private Long idConsulta;
+    private String pacienteNome;
     private String pacienteDoc;
-    private LocalDateTime dataHora;
+    private LocalDate dataHora;
     private String status;
-    private Long obs;
+    private String  obs;
     private LocalDate dtCriacao;
     private long idLab;
     private long idPreset;
 
-    public Consulta(Long idConsulta, String pacienteDoc, LocalDateTime dataHora, String status, Long obs, LocalDate dtCriacao, long idLab, long idPreset) {
+    public Consulta(Long idConsulta, String pacienteNome, String pacienteDoc, LocalDate dataHora, String status, String obs, LocalDate dtCriacao, long idLab, long idPreset) {
         this.idConsulta = idConsulta;
+        this.pacienteNome = pacienteNome;
         this.pacienteDoc = pacienteDoc;
         this.dataHora = dataHora;
         this.status = status;
@@ -33,6 +34,14 @@ public class Consulta {
         this.idConsulta = idConsulta;
     }
 
+    public String getPacienteNome() {
+        return pacienteNome;
+    }
+
+    public void setPacienteNome(String pacienteNome) {
+        this.pacienteNome = pacienteNome;
+    }
+
     public String getPacienteDoc() {
         return pacienteDoc;
     }
@@ -41,11 +50,11 @@ public class Consulta {
         this.pacienteDoc = pacienteDoc;
     }
 
-    public LocalDateTime getDataHora() {
+    public LocalDate getDataHora() {
         return dataHora;
     }
 
-    public void setDataHora(LocalDateTime dataHora) {
+    public void setDataHora(LocalDate dataHora) {
         this.dataHora = dataHora;
     }
 
@@ -57,11 +66,11 @@ public class Consulta {
         this.status = status;
     }
 
-    public Long getObs() {
+    public String getObs() {
         return obs;
     }
 
-    public void setObs(Long obs) {
+    public void setObs(String obs) {
         this.obs = obs;
     }
 

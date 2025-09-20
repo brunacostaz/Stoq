@@ -2,16 +2,16 @@ package main.java.com.stoq.domain.model;
 
 public class Material {
 
-    private long idItem;
+    private long idMaterial ;
     private String nome;
     private String idLote;
     private String unidadeMedida;
     private int estoqueMinimo;
     private String descricao;
-    private boolean ativo;
+    private String ativo;
 
-    public Material(long idItem, String nome, String idLote, String unidadeMedida, int estoqueMinimo, String descricao, boolean ativo) {
-        this.idItem = idItem;
+    public Material(long idMaterial, String nome, String idLote, String unidadeMedida, int estoqueMinimo, String descricao, String ativo) {
+        this.idMaterial = idMaterial;
         this.nome = nome;
         this.idLote = idLote;
         this.unidadeMedida = unidadeMedida;
@@ -20,12 +20,12 @@ public class Material {
         this.ativo = ativo;
     }
 
-    public long getIdItem() {
-        return idItem;
+    public long getIdMaterial() {
+        return idMaterial;
     }
 
-    public void setIdItem(long idItem) {
-        this.idItem = idItem;
+    public void setIdMaterial(long idMaterial) {
+        this.idMaterial = idMaterial;
     }
 
     public String getNome() {
@@ -68,11 +68,11 @@ public class Material {
         this.descricao = descricao;
     }
 
-    public boolean isAtivo() {
+    public String getAtivo() {
         return ativo;
     }
 
-    public void setAtivo(boolean ativo) {
+    public void setAtivo(String ativo) {
         this.ativo = ativo;
     }
 }

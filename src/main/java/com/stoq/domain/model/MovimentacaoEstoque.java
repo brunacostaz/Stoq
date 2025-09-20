@@ -1,20 +1,20 @@
 package main.java.com.stoq.domain.model;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public class MovimentacaoEstoque {
 
     private long idMovimentacao;
-    private LocalDateTime dataMovimentacao;
+    private LocalDate dataMovimentacao;
     private String tipoMovimentacao;
     private long idLab;
     private long idItem;
     private long idQRCode;
     private long idFuncionario;
-    private int qntde;
+    private float qntde;
     private String obs;
 
-    public MovimentacaoEstoque(long idMovimentacao, LocalDateTime dataMovimentacao, String tipoMovimentacao, long idLab, long idItem, long idQRCode, long idFuncionario, int qntde, String obs) {
+    public MovimentacaoEstoque(long idMovimentacao, LocalDate dataMovimentacao, String tipoMovimentacao, long idLab, long idItem, long idQRCode, long idFuncionario, float qntde, String obs) {
         this.idMovimentacao = idMovimentacao;
         this.dataMovimentacao = dataMovimentacao;
         this.tipoMovimentacao = tipoMovimentacao;
@@ -34,11 +34,11 @@ public class MovimentacaoEstoque {
         this.idMovimentacao = idMovimentacao;
     }
 
-    public LocalDateTime getDataMovimentacao() {
+    public LocalDate getDataMovimentacao() {
         return dataMovimentacao;
     }
 
-    public void setDataMovimentacao(LocalDateTime dataMovimentacao) {
+    public void setDataMovimentacao(LocalDate dataMovimentacao) {
         this.dataMovimentacao = dataMovimentacao;
     }
 
@@ -82,11 +82,11 @@ public class MovimentacaoEstoque {
         this.idFuncionario = idFuncionario;
     }
 
-    public int getQntde() {
+    public float getQntde() {
         return qntde;
     }
 
-    public void setQntde(int qntde) {
+    public void setQntde(float qntde) {
         this.qntde = qntde;
     }
 

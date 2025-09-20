@@ -1,6 +1,6 @@
 package main.java.com.stoq.domain.model;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public class QRCode {
 
@@ -8,19 +8,19 @@ public class QRCode {
     private long idConsulta;
     private long idEnfermeiro;
     private long idAdminValidador;
-    private long idLab;
-    private long codigoQR;
+    private long idLaboratorio;
+    private String codigo;
     private String status;
-    private LocalDateTime dtGeracao;
-    private LocalDateTime dtValidacao;
+    private LocalDate dtGeracao;
+    private LocalDate dtValidacao;
 
-    public QRCode(long idQRCode, long idConsulta, long idEnfermeiro, long idAdminValidador, long idLab, long codigoQR, String status, LocalDateTime dtGeracao, LocalDateTime dtValidacao) {
+    public QRCode(long idQRCode, long idConsulta, long idEnfermeiro, long idAdminValidador, long idLaboratorio, String codigo, String status, LocalDate dtGeracao, LocalDate dtValidacao) {
         this.idQRCode = idQRCode;
         this.idConsulta = idConsulta;
         this.idEnfermeiro = idEnfermeiro;
         this.idAdminValidador = idAdminValidador;
-        this.idLab = idLab;
-        this.codigoQR = codigoQR;
+        this.idLaboratorio = idLaboratorio;
+        this.codigo = codigo;
         this.status = status;
         this.dtGeracao = dtGeracao;
         this.dtValidacao = dtValidacao;
@@ -58,20 +58,20 @@ public class QRCode {
         this.idAdminValidador = idAdminValidador;
     }
 
-    public long getIdLab() {
-        return idLab;
+    public long getIdLaboratorio() {
+        return idLaboratorio;
     }
 
-    public void setIdLab(long idLab) {
-        this.idLab = idLab;
+    public void setIdLaboratorio(long idLaboratorio) {
+        this.idLaboratorio = idLaboratorio;
     }
 
-    public long getCodigoQR() {
-        return codigoQR;
+    public String getCodigo() {
+        return codigo;
     }
 
-    public void setCodigoQR(long codigoQR) {
-        this.codigoQR = codigoQR;
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
     }
 
     public String getStatus() {
@@ -82,19 +82,19 @@ public class QRCode {
         this.status = status;
     }
 
-    public LocalDateTime getDtGeracao() {
+    public LocalDate getDtGeracao() {
         return dtGeracao;
     }
 
-    public void setDtGeracao(LocalDateTime dtGeracao) {
+    public void setDtGeracao(LocalDate dtGeracao) {
         this.dtGeracao = dtGeracao;
     }
 
-    public LocalDateTime getDtValidacao() {
+    public LocalDate getDtValidacao() {
         return dtValidacao;
     }
 
-    public void setDtValidacao(LocalDateTime dtValidacao) {
+    public void setDtValidacao(LocalDate dtValidacao) {
         this.dtValidacao = dtValidacao;
     }
 }

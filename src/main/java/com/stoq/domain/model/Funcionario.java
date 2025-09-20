@@ -9,12 +9,11 @@ public class Funcionario {
     private String cpf;
     private String email;
     private String cargo;
-    private boolean ativo;
+    private String ativo;
     private LocalDate dtCadastro;
-    private long idLab;
-    private long idArea;
+    private long idLaboratorio;
 
-    public Funcionario(long idFuncionario, String nome, String cpf, String email, String cargo, boolean ativo, LocalDate dtCadastro, long idLab, long idArea) {
+    public Funcionario(long idFuncionario, String nome, String cpf, String email, String cargo, String ativo, LocalDate dtCadastro, long idLaboratorio) {
         this.idFuncionario = idFuncionario;
         this.nome = nome;
         this.cpf = cpf;
@@ -22,8 +21,7 @@ public class Funcionario {
         this.cargo = cargo;
         this.ativo = ativo;
         this.dtCadastro = dtCadastro;
-        this.idLab = idLab;
-        this.idArea = idArea;
+        this.idLaboratorio = idLaboratorio;
     }
 
     public long getIdFuncionario() {
@@ -66,11 +64,11 @@ public class Funcionario {
         this.cargo = cargo;
     }
 
-    public boolean isAtivo() {
+    public String getAtivo() {
         return ativo;
     }
 
-    public void setAtivo(boolean ativo) {
+    public void setAtivo(String ativo) {
         this.ativo = ativo;
     }
 
@@ -82,19 +80,11 @@ public class Funcionario {
         this.dtCadastro = dtCadastro;
     }
 
-    public long getIdLab() {
-        return idLab;
+    public long getIdLaboratorio() {
+        return idLaboratorio;
     }
 
-    public void setIdLab(long idLab) {
-        this.idLab = idLab;
-    }
-
-    public long getIdArea() {
-        return idArea;
-    }
-
-    public void setIdArea(long idArea) {
-        this.idArea = idArea;
+    public void setIdLaboratorio(long idLaboratorio) {
+        this.idLaboratorio = idLaboratorio;
     }
 }
