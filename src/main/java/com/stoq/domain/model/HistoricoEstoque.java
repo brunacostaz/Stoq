@@ -7,16 +7,18 @@ public class HistoricoEstoque {
     private long idHistorico;
     private LocalDate diaHistorico;
     private long idLaboratorio;
+    private long idMaterial;
     private float qtdeInicial;
     private float qtdeEntradas;
     private float qtdeSaidas;
     private float qtdeAjustes;
     private float qtdeFinal;
 
-    public HistoricoEstoque(long idHistorico, LocalDate diaHistorico, long idLaboratorio, float qtdeInicial, float qtdeEntradas, float qtdeSaidas, float qtdeAjustes, float qtdeFinal) {
+    public HistoricoEstoque(long idHistorico, LocalDate diaHistorico, long idLaboratorio, long idMaterial, float qtdeInicial, float qtdeEntradas, float qtdeSaidas, float qtdeAjustes, float qtdeFinal) {
         this.idHistorico = idHistorico;
         this.diaHistorico = diaHistorico;
         this.idLaboratorio = idLaboratorio;
+        this.idMaterial = idMaterial;
         this.qtdeInicial = qtdeInicial;
         this.qtdeEntradas = qtdeEntradas;
         this.qtdeSaidas = qtdeSaidas;
@@ -24,9 +26,10 @@ public class HistoricoEstoque {
         this.qtdeFinal = qtdeFinal;
     }
 
-    public HistoricoEstoque(LocalDate diaHistorico, long idLaboratorio, float qtdeInicial, float qtdeEntradas, float qtdeSaidas, float qtdeAjustes, float qtdeFinal) {
+    public HistoricoEstoque(LocalDate diaHistorico, long idLaboratorio, long idMaterial, float qtdeInicial, float qtdeEntradas, float qtdeSaidas, float qtdeAjustes, float qtdeFinal) {
         this.diaHistorico = diaHistorico;
         this.idLaboratorio = idLaboratorio;
+        this.idMaterial = idMaterial;
         this.qtdeInicial = qtdeInicial;
         this.qtdeEntradas = qtdeEntradas;
         this.qtdeSaidas = qtdeSaidas;
@@ -56,6 +59,14 @@ public class HistoricoEstoque {
 
     public void setIdLaboratorio(long idLaboratorio) {
         this.idLaboratorio = idLaboratorio;
+    }
+
+    public long getIdMaterial() {
+        return idMaterial;
+    }
+
+    public void setIdMaterial(long idMaterial) {
+        this.idMaterial = idMaterial;
     }
 
     public float getQtdeInicial() {

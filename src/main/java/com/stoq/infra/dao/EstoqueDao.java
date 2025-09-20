@@ -6,6 +6,8 @@ import main.java.com.stoq.domain.model.Estoque;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.LocalDate;
+
 
 public class EstoqueDao {
 
@@ -102,6 +104,41 @@ public class EstoqueDao {
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao deletar estoque", e);
+        }
+    }
+
+    // Atualiza estoque - saída de material
+    public void retirarEstoque(long idLab, long idMaterial, float qtde) {
+        String sql = "UPDATE ESTOQUE SET QTDE = QTDE - ? WHERE LABORATORIO_ID = ? AND MATERIAL_ID = ?";
+        try (Connection conn = OracleConnectionFactory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setFloat(1, qtde);
+            stmt.setLong(2, idLab);
+            stmt.setLong(3, idMaterial);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao retirar material do estoque", e);
+        }
+    }
+
+    // Atualiza estoque - entrada de material
+    public void reporEstoque(long idLab, long idMaterial, float qtde) {
+        String sql = "MERGE INTO ESTOQUE e " +
+                "USING dual ON (e.LABORATORIO_ID = ? AND e.MATERIAL_ID = ?) " +
+                "WHEN MATCHED THEN UPDATE SET QTDE = e.QTDE + ? " +
+                "WHEN NOT MATCHED THEN INSERT (LABORATORIO_ID, MATERIAL_ID, DIA, QTDE) VALUES (?, ?, ?, ?)";
+        try (Connection conn = OracleConnectionFactory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setLong(1, idLab);
+            stmt.setLong(2, idMaterial);
+            stmt.setFloat(3, qtde);
+            stmt.setLong(4, idLab);
+            stmt.setLong(5, idMaterial);
+            stmt.setDate(6, Date.valueOf(LocalDate.now()));
+            stmt.setFloat(7, qtde);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao repor material no estoque", e);
         }
     }
 }
