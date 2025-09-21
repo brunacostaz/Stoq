@@ -84,4 +84,19 @@ public class Material {
     public void setAtivo(String ativo) {
         this.ativo = ativo;
     }
+
+    @Override
+    public String toString() {
+        return "Material {\n" +
+                "  idMaterial=" + idMaterial + ",\n" +
+                "  nome='" + nome + "',\n" +
+                "  idLote='" + idLote + "',\n" +
+                "  unidadeMedida='" + unidadeMedida + "',\n" +
+                "  estoqueMinimo=" + estoqueMinimo + ",\n" +
+                "  descricao='" + descricao + "',\n" +
+                "  ativo='" + ativo + "'\n" +
+                "}";
+    }
+
+
 }

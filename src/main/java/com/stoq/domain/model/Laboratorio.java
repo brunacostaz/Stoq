@@ -67,12 +67,13 @@ public class Laboratorio {
 
     @Override
     public String toString() {
-        return "Laboratorio{" +
-                "idLab=" + idLab +
-                ", nome='" + nome + '\'' +
-                ", codigo='" + codigo + '\'' +
-                ", ativo='" + ativo + '\'' +
-                ", dtCadastro=" + dtCadastro +
-                '}';
+        return "{\n" +
+                "  \"idLab\": " + idLab + ",\n" +
+                "  \"nome\": \"" + nome + "\",\n" +
+                "  \"codigo\": \"" + codigo + "\",\n" +
+                "  \"ativo\": \"" + ativo + "\",\n" +
+                "  \"dtCadastro\": \"" + dtCadastro + "\"\n" +
+                "}";
     }
+
 }

@@ -10,30 +10,64 @@ import java.util.List;
 public class QRCodeDao {
 
     // CREATE
+
     public void insert(QRCode qr) {
-        String sql = "INSERT INTO QRCODE (CONSULTA_ID, ENFERMEIRO_ID, ADMIN_VALIDADOR_ID, LABORATORIO_ID, CODIGO, STATUS, DT_GERACAO, DT_VALIDACAO) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO QRCODE " +
+                "(CONSULTA_ID, ENFERMEIRO_ID, ADMIN_VALIDADOR_ID, LABORATORIO_ID, CODIGO, STATUS, DT_GERACAO, DT_VALIDACAO) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING ID_QRCODE INTO ?";
+
         try (Connection conn = OracleConnectionFactory.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setLong(1, qr.getIdConsulta());
             stmt.setLong(2, qr.getIdEnfermeiro());
-            if (qr.getIdAdminValidador() != 0) {
-                stmt.setLong(3, qr.getIdAdminValidador());
-            } else {
-                stmt.setNull(3, Types.BIGINT);
-            }
+            stmt.setObject(3, qr.getIdAdminValidador() == 0 ? null : qr.getIdAdminValidador());
             stmt.setLong(4, qr.getIdLaboratorio());
             stmt.setString(5, qr.getCodigo());
             stmt.setString(6, qr.getStatus());
-            stmt.setDate(7, qr.getDtGeracao() != null ? Date.valueOf(qr.getDtGeracao()) : null);
-            stmt.setDate(8, qr.getDtValidacao() != null ? Date.valueOf(qr.getDtValidacao()) : null);
+            stmt.setDate(7, java.sql.Date.valueOf(qr.getDtGeracao()));
+            stmt.setDate(8, qr.getDtValidacao() == null ? null : java.sql.Date.valueOf(qr.getDtValidacao()));
+
+            // Registrar parâmetro de saída para pegar o ID gerado
+            ((oracle.jdbc.OraclePreparedStatement) stmt).registerReturnParameter(9, java.sql.Types.BIGINT);
 
             stmt.executeUpdate();
+
+            try (ResultSet rs = ((oracle.jdbc.OraclePreparedStatement) stmt).getReturnResultSet()) {
+                if (rs.next()) {
+                    qr.setIdQRCode(rs.getLong(1));
+                }
+            }
+
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao inserir QRCode", e);
         }
     }
+
+//    public void insert(QRCode qr) {
+//        String sql = "INSERT INTO QRCODE (CONSULTA_ID, ENFERMEIRO_ID, ADMIN_VALIDADOR_ID, LABORATORIO_ID, CODIGO, STATUS, DT_GERACAO, DT_VALIDACAO) " +
+//                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+//        try (Connection conn = OracleConnectionFactory.getConnection();
+//             PreparedStatement stmt = conn.prepareStatement(sql)) {
+//
+//            stmt.setLong(1, qr.getIdConsulta());
+//            stmt.setLong(2, qr.getIdEnfermeiro());
+//            if (qr.getIdAdminValidador() != 0) {
+//                stmt.setLong(3, qr.getIdAdminValidador());
+//            } else {
+//                stmt.setNull(3, Types.BIGINT);
+//            }
+//            stmt.setLong(4, qr.getIdLaboratorio());
+//            stmt.setString(5, qr.getCodigo());
+//            stmt.setString(6, qr.getStatus());
+//            stmt.setDate(7, qr.getDtGeracao() != null ? Date.valueOf(qr.getDtGeracao()) : null);
+//            stmt.setDate(8, qr.getDtValidacao() != null ? Date.valueOf(qr.getDtValidacao()) : null);
+//
+//            stmt.executeUpdate();
+//        } catch (SQLException e) {
+//            throw new RuntimeException("Erro ao inserir QRCode", e);
+//        }
+//    }
 
     // READ BY ID
     public QRCode findById(Long id) {

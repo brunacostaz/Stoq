@@ -109,4 +109,21 @@ public class MovimentacaoEstoque {
     public void setObs(String obs) {
         this.obs = obs;
     }
+
+    @Override
+    public String toString() {
+        return "MovimentacaoEstoque {\n" +
+                "  idMovimentacao=" + idMovimentacao + ",\n" +
+                "  dataMovimentacao=" + dataMovimentacao + ",\n" +
+                "  tipoMovimentacao='" + tipoMovimentacao + "',\n" +
+                "  idLab=" + idLab + ",\n" +
+                "  idItem=" + idItem + ",\n" +
+                "  idQRCode=" + idQRCode + ",\n" +
+                "  idFuncionario=" + idFuncionario + ",\n" +
+                "  qntde=" + qntde + ",\n" +
+                "  obs='" + obs + "'\n" +
+                "}";
+    }
+
+
 }

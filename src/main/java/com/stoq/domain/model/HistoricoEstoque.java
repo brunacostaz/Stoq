@@ -108,4 +108,21 @@ public class HistoricoEstoque {
     public void setQtdeFinal(float qtdeFinal) {
         this.qtdeFinal = qtdeFinal;
     }
+
+    @Override
+    public String toString() {
+        return "HistoricoEstoque {\n" +
+                "  idHistorico=" + idHistorico + ",\n" +
+                "  diaHistorico=" + diaHistorico + ",\n" +
+                "  idLaboratorio=" + idLaboratorio + ",\n" +
+                "  idMaterial=" + idMaterial + ",\n" +
+                "  qtdeInicial=" + qtdeInicial + ",\n" +
+                "  qtdeEntradas=" + qtdeEntradas + ",\n" +
+                "  qtdeSaidas=" + qtdeSaidas + ",\n" +
+                "  qtdeAjustes=" + qtdeAjustes + ",\n" +
+                "  qtdeFinal=" + qtdeFinal + "\n" +
+                "}";
+    }
+
+
 }

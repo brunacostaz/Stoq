@@ -108,4 +108,20 @@ public class Consulta {
     public void setIdPreset(long idPreset) {
         this.idPreset = idPreset;
     }
+
+    @Override
+    public String toString() {
+        return "Consulta {\n" +
+                "  idConsulta=" + idConsulta + ",\n" +
+                "  pacienteNome='" + pacienteNome + "',\n" +
+                "  pacienteDoc='" + pacienteDoc + "',\n" +
+                "  dataHora=" + dataHora + ",\n" +
+                "  status='" + status + "',\n" +
+                "  obs='" + obs + "',\n" +
+                "  dtCriacao=" + dtCriacao + ",\n" +
+                "  idLab=" + idLab + ",\n" +
+                "  idPreset=" + idPreset + "\n" +
+                "}";
+    }
+
 }

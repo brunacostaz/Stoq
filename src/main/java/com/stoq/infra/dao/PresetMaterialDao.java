@@ -15,7 +15,7 @@ public class PresetMaterialDao {
      */
     public List<Long> findMateriaisByPresetId(Long presetId) {
         List<Long> materiais = new ArrayList<>();
-        String sql = "SELECT ID_ITEM FROM PRESET_MATERIAL WHERE PRESET_ID = ?";
+        String sql = "SELECT MATERIAL_ID FROM PRESET_MATERIAIS WHERE PRESET_ID = ?";
 
         try (Connection conn = OracleConnectionFactory.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -24,7 +24,7 @@ public class PresetMaterialDao {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                materiais.add(rs.getLong("ID_ITEM"));
+                materiais.add(rs.getLong("MATERIAL_ID"));
             }
 
         } catch (SQLException e) {
@@ -39,8 +39,8 @@ public class PresetMaterialDao {
      */
     public List<PedidoItens> findMateriaisComQtde(Long presetId) {
         List<PedidoItens> itens = new ArrayList<>();
-        String sql = "SELECT PRESET_ID, ID_ITEM, QTDE_POR_EXAME " +
-                "FROM PRESET_MATERIAL WHERE PRESET_ID = ?";
+        String sql = "SELECT PRESET_ID, MATERIAL_ID, QTDE_POR_EXAME " +
+                "FROM PRESET_MATERIAIS WHERE PRESET_ID = ?";
 
         try (Connection conn = OracleConnectionFactory.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -51,7 +51,7 @@ public class PresetMaterialDao {
             while (rs.next()) {
                 PedidoItens item = new PedidoItens(
                         rs.getLong("PRESET_ID"),
-                        rs.getLong("ID_ITEM"),
+                        rs.getLong("MATERIAL_ID"),
                         rs.getFloat("QTDE_POR_EXAME"),
                         0,
                         0,
@@ -75,7 +75,7 @@ public class PresetMaterialDao {
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setLong(1, pm.getIdPreset());
-            stmt.setLong(2, pm.getIdItem()); // aqui é MATERIAL_ID no banco
+            stmt.setLong(2, pm.getIdItem());
             stmt.setFloat(3, pm.getQtdePorExame());
 
             stmt.executeUpdate();

@@ -27,11 +27,11 @@ public class AlertaService {
 
     /**
      * Sobrecarga: dispara alerta usando um usuário "SISTEMA"
-     * Útil para chamadas automáticas (ex.: EstoqueService)
+     * Após preencher o solicitante como sistema, ele chama o monitorarBaixaEstoque que possui toda a lógica de monitoração
      */
     public void monitorarBaixaEstoque(long laboratorioId) {
         Funcionario sistema = new Funcionario(
-                0L,                     // idFuncionario fictício
+                29L,                     // idFuncionario do SISTEMA
                 "Sistema",              // nome
                 "",                     // cpf
                 "sistema@stoq",         // email
@@ -68,7 +68,7 @@ public class AlertaService {
 
         // Chama PedidoService para abrir pedido
         Long idPedido = pedidoService.realizarPedido(idsMateriais, solicitante, laboratorioId);
-        System.out.println("Pedido automático criado: ID " + idPedido);
+        System.out.println("\nPedido automático criado: ID " + idPedido +"\n");
     }
 
     /**
@@ -89,4 +89,6 @@ public class AlertaService {
             System.out.println("⚠ Alerta: Material próximo do vencimento → " + m.getNome());
         }
     }
+
+
 }

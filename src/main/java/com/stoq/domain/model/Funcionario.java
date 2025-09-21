@@ -99,4 +99,20 @@ public class Funcionario {
     public void setIdLaboratorio(Long idLaboratorio) {
         this.idLaboratorio = idLaboratorio;
     }
+
+    @Override
+    public String toString() {
+        return "Funcionario {\n" +
+                "  idFuncionario=" + idFuncionario + ",\n" +
+                "  nome='" + nome + "',\n" +
+                "  cpf='" + cpf + "',\n" +
+                "  email='" + email + "',\n" +
+                "  cargo='" + cargo + "',\n" +
+                "  ativo='" + ativo + "',\n" +
+                "  dtCadastro=" + dtCadastro + ",\n" +
+                "  idLaboratorio=" + idLaboratorio + "\n" +
+                "}";
+    }
+
+
 }

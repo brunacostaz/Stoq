@@ -40,4 +40,15 @@ public class PresetMaterial {
     public void setQtdePorExame(float qtdePorExame) {
         this.qtdePorExame = qtdePorExame;
     }
+
+    @Override
+    public String toString() {
+        return "PresetMaterial {\n" +
+                "  idPreset=" + idPreset + ",\n" +
+                "  idItem=" + idItem + ",\n" +
+                "  qtdePorExame=" + qtdePorExame + "\n" +
+                "}";
+    }
+
+
 }

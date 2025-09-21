@@ -86,4 +86,19 @@ public class PedidoItens {
     public void setValidador(LocalDate validador) {
         this.validador = validador;
     }
+
+    @Override
+    public String toString() {
+        return "PedidoItens {\n" +
+                "  idPedido=" + idPedido + ",\n" +
+                "  idMaterial=" + idMaterial + ",\n" +
+                "  qtdeSolicitada=" + qtdeSolicitada + ",\n" +
+                "  qntdeRecebida=" + qntdeRecebida + ",\n" +
+                "  precoUnitario=" + precoUnitario + ",\n" +
+                "  lote='" + lote + "',\n" +
+                "  validador=" + validador + "\n" +
+                "}";
+    }
+
+
 }

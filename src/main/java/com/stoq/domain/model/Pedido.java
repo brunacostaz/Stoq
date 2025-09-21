@@ -98,4 +98,20 @@ public class Pedido {
     public void setFornecedorNome(String fornecedorNome) {
         this.fornecedorNome = fornecedorNome;
     }
+
+    @Override
+    public String toString() {
+        return "Pedido {\n" +
+                "  idPedido=" + idPedido + ",\n" +
+                "  numero='" + numero + "',\n" +
+                "  idLaboratorio=" + idLaboratorio + ",\n" +
+                "  idFuncionario=" + idFuncionario + ",\n" +
+                "  status='" + status + "',\n" +
+                "  dtCriacao=" + dtCriacao + ",\n" +
+                "  dtRecebimento=" + dtRecebimento + ",\n" +
+                "  fornecedorNome='" + fornecedorNome + "'\n" +
+                "}";
+    }
+
+
 }

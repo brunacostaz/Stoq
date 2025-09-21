@@ -10,6 +10,7 @@ import main.java.com.stoq.infra.dao.MovimentacaoEstoqueDao;
 import main.java.com.stoq.infra.dao.PedidoDao;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,31 +21,49 @@ public class EstoqueService {
     private final MovimentacaoEstoqueDao movimentacaoDao;
     private final HistoricoEstoqueDao historicoDao;
     private final PedidoDao pedidoDao;
-    private final AlertaService alertaService;
+    private AlertaService alertaService;
 
-    public EstoqueService(EstoqueDao estoqueDao, MovimentacaoEstoqueDao movimentacaoDao,
-                          HistoricoEstoqueDao historicoDao, PedidoDao pedidoDao,
-                          AlertaService alertaService) {
+    public EstoqueService(EstoqueDao estoqueDao,
+                          MovimentacaoEstoqueDao movimentacaoDao,
+                          HistoricoEstoqueDao historicoDao,
+                          PedidoDao pedidoDao) {
         this.estoqueDao = estoqueDao;
         this.movimentacaoDao = movimentacaoDao;
         this.historicoDao = historicoDao;
         this.pedidoDao = pedidoDao;
+    }
+
+    // Setter para injetar depois
+    public void setAlertaService(AlertaService alertaService) {
         this.alertaService = alertaService;
     }
 
     /**
-     * Método responsável por realizar o desconto dos materiais retirados no estoque, registrando o evento na MovimentacaoEstoque e atualizando o saldo na tabela Estoque
+     *  Método responsável por realizar o desconto dos materiais retirados no estoque, registrando o evento na MovimentacaoEstoque e atualizando o saldo na tabela Estoque
      * @param laboratorioId
      * @param funcionarioId
      * @param qrcodeId
      * @param materiaisRetirados
      */
     public void retiradaEstoque(long laboratorioId, long funcionarioId, Long qrcodeId, List<PedidoItens> materiaisRetirados) {
+        List<Long> faltantes = new ArrayList<>();
+
         for (PedidoItens item : materiaisRetirados) {
             long materialId = item.getIdMaterial();
             float qtde = item.getQtdeSolicitada();
 
-            // Atualiza estoque em tempo real
+            // Consulta saldo atual
+            float saldoAtual = estoqueDao.buscarQuantidadeAtual(laboratorioId, materialId);
+
+            if (saldoAtual < qtde) {
+                // Se não tiver saldo suficiente, não baixa e marca como faltante
+                faltantes.add(materialId);
+                System.out.println("⚠ Estoque insuficiente para material ID " + materialId +
+                        ". Atual: " + saldoAtual + ", Solicitado: " + qtde);
+                continue;
+            }
+
+            // Atualiza estoque (baixa)
             estoqueDao.atualizarEstoque(laboratorioId, materialId, -qtde);
 
             // Registra movimentação
@@ -62,12 +81,19 @@ public class EstoqueService {
             movimentacaoDao.insert(mov);
         }
 
-        // Dispara alerta para checar se algum material ficou abaixo do mínimo
+        // Se teve faltantes, dispara pedido automático de reposição
+        if (!faltantes.isEmpty()) {
+            System.out.println("Gerando pedido automático para materiais faltantes...");
+            alertaService.monitorarBaixaEstoque(laboratorioId);
+        }
+
+        // Dispara alerta normal para os que ficaram abaixo do mínimo
         alertaService.monitorarBaixaEstoque(laboratorioId);
     }
 
+
     /**
-     * Método responsável por adicionar os itens que foram comprados na tabela estoque e resgistrar o evento na movimentaçãoEstoque
+     * Método responsável por adicionar os itens que foram comprados na tabela estoque e registrar o evento na movimentaçãoEstoque
      * @param pedidoId
      * @param recebedor
      */

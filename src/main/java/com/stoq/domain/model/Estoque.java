@@ -64,4 +64,17 @@ public class Estoque {
     public void setQuantidadeAtual(float quantidadeAtual) {
         this.quantidadeAtual = quantidadeAtual;
     }
+
+    @Override
+    public String toString() {
+        return "Estoque {\n" +
+                "  idEstoque=" + idEstoque + ",\n" +
+                "  idLab=" + idLab + ",\n" +
+                "  idMaterial=" + idMaterial + ",\n" +
+                "  dia=" + dia + ",\n" +
+                "  quantidadeAtual=" + quantidadeAtual + "\n" +
+                "}";
+    }
+
+
 }

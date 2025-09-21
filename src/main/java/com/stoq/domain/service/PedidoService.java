@@ -77,7 +77,7 @@ public class PedidoService {
                 "PENDENTE",           // status
                 LocalDate.now(),      // dt_criacao
                 null,                 // dt_recebimento
-                null                  // fornecedor_nome
+                "Exemplo Fornecedor"                  // fornecedor_nome
         );
         pedidoDao.insert(cabecalho);
 
@@ -97,7 +97,7 @@ public class PedidoService {
 
     /**
      * “Aprovar/Enviar”: define o fornecedor e mantém status PENDENTE.
-     * (Seu modelo não tem status APROVADO/ENVIADO; consideramos PENDENTE até RECEBIDO/CANCELADO.)
+     * (o modelo não tem status APROVADO/ENVIADO; consideramos PENDENTE até RECEBIDO/CANCELADO.)
      */
     public void enviarPedido(Long idPedido, Funcionario gestor, String fornecedorNome) {
         validarGestor(gestor);
@@ -112,6 +112,7 @@ public class PedidoService {
         p.setFornecedorNome(fornecedorNome);
         // status permanece PENDENTE até o recebimento
         pedidoDao.update(p);
+        System.out.println("Pedido enviado ao fornecedor com sucesso!");
     }
 
     /**

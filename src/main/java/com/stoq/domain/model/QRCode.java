@@ -108,4 +108,20 @@ public class QRCode {
     public void setDtValidacao(LocalDate dtValidacao) {
         this.dtValidacao = dtValidacao;
     }
+
+    @Override
+    public String toString() {
+        return "QRCode {\n" +
+                "  idQRCode=" + idQRCode + ",\n" +
+                "  idConsulta=" + idConsulta + ",\n" +
+                "  idEnfermeiro=" + idEnfermeiro + ",\n" +
+                "  idAdminValidador=" + idAdminValidador + ",\n" +
+                "  idLaboratorio=" + idLaboratorio + ",\n" +
+                "  codigo='" + codigo + "',\n" +
+                "  status='" + status + "',\n" +
+                "  dtGeracao=" + dtGeracao + ",\n" +
+                "  dtValidacao=" + dtValidacao + "\n" +
+                "}";
+    }
+
 }

@@ -1,5 +1,6 @@
 package main.java.com.stoq.infra.dao;
 
+import main.java.com.stoq.domain.model.Estoque;
 import main.java.com.stoq.domain.model.Material;
 import main.java.com.stoq.infra.db.OracleConnectionFactory;
 
@@ -111,6 +112,56 @@ public class EstoqueDao {
 
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao buscar materiais próximos do vencimento", e);
+        }
+
+        return lista;
+    }
+
+    public float buscarQuantidadeAtual(long laboratorioId, long materialId) {
+        String sql = "SELECT QTDE FROM ESTOQUE WHERE LABORATORIO_ID=? AND MATERIAL_ID=?";
+        try (Connection conn = OracleConnectionFactory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setLong(1, laboratorioId);
+            stmt.setLong(2, materialId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getFloat("QTDE");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao buscar saldo de estoque", e);
+        }
+        return 0f; // se não encontrar
+    }
+
+    // Lista todo o estoque de um laboratório
+    public List<Estoque> findByLaboratorio(long laboratorioId) {
+        List<Estoque> lista = new ArrayList<>();
+        String sql = """
+        SELECT ID_ESTOQUE, LABORATORIO_ID, MATERIAL_ID, DIA, QTDE
+        FROM ESTOQUE
+        WHERE LABORATORIO_ID = ?
+        ORDER BY DIA DESC
+    """;
+
+        try (Connection conn = OracleConnectionFactory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setLong(1, laboratorioId);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Estoque e = new Estoque(
+                        rs.getLong("ID_ESTOQUE"),
+                        rs.getLong("LABORATORIO_ID"),
+                        rs.getLong("MATERIAL_ID"),
+                        rs.getDate("DIA").toLocalDate(),
+                        rs.getFloat("QTDE")
+                );
+                lista.add(e);
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao buscar estoque do laboratório", e);
         }
 
         return lista;

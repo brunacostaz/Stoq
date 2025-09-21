@@ -50,10 +50,9 @@ public class QRCodeService {
         }
 
         QRCode qr = new QRCode(
-                0,
                 consulta.getIdConsulta(),
                 enfermeiro.getIdFuncionario(),
-                0, // admin ainda não validou
+                0,
                 consulta.getIdLab(),
                 "QR-" + System.currentTimeMillis(),
                 "PENDENTE",
@@ -62,8 +61,37 @@ public class QRCodeService {
         );
 
         qrCodeDao.insert(qr);
+        System.out.println("\nQRCODE gerado com sucesso!");
+
         return qr;
     }
+
+//    public QRCode gerarQRCode(Long consultaId, Funcionario enfermeiro) {
+//        if (!"ENFERMEIRO".equalsIgnoreCase(enfermeiro.getCargo())) {
+//            throw new RuntimeException("Acesso negado: apenas ENFERMEIROS podem gerar QRCode.");
+//        }
+//
+//        Consulta consulta = consultaDao.findById(consultaId);
+//        if (consulta == null) {
+//            throw new RuntimeException("Consulta não encontrada.");
+//        }
+//
+//        QRCode qr = new QRCode(
+//                consulta.getIdConsulta(),
+//                enfermeiro.getIdFuncionario(),
+//                0, // admin ainda não validou
+//                consulta.getIdLab(),
+//                "QR-" + System.currentTimeMillis(),
+//                "PENDENTE",
+//                LocalDate.now(),
+//                null
+//        );
+//
+//        System.out.println("\nQRCODE gerado com sucesso!");
+//        qrCodeDao.insert(qr);
+//
+//        return qr;
+//    }
 
     /**
      * Admin valida QRCode → retira materiais do estoque
@@ -81,6 +109,7 @@ public class QRCodeService {
         qr.setStatus("ACEITO");
         qr.setIdAdminValidador(admin.getIdFuncionario());
         qr.setDtValidacao(LocalDate.now());
+        System.out.println("\nQRCODE validado com sucesso!");
 
         qrCodeDao.update(qr);
 
@@ -90,9 +119,11 @@ public class QRCodeService {
             throw new RuntimeException("Consulta associada ao QRCode não encontrada.");
         }
 
+        System.out.println("\nBuscando os materiais retirados na tabela Preset_Material");
         // Busca materiais e quantidades do preset
         List<PedidoItens> materiaisRetirados = presetMaterialDao.findMateriaisComQtde(consulta.getIdPreset());
 
+        System.out.println("\nChamando o método retiradaEstoque para dar baixa nos itens");
         // Chama retirada do estoque
         estoqueService.retiradaEstoque(
                 qr.getIdLaboratorio(),
