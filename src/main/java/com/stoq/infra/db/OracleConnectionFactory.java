@@ -19,6 +19,13 @@ public class OracleConnectionFactory {
         Properties props = new Properties();
         props.setProperty("user", user);
         props.setProperty("password", pass);
-        return DriverManager.getConnection(url, props);
+
+        Connection conn = DriverManager.getConnection(url, props);
+
+        // Define se a conexão deve rodar em autoCommit (default: true)
+        boolean autoCommit = Boolean.parseBoolean(System.getenv().getOrDefault("ORACLE_AUTOCOMMIT", "true"));
+        conn.setAutoCommit(autoCommit);
+
+        return conn;
     }
 }

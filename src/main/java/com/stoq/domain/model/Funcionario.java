@@ -11,10 +11,10 @@ public class Funcionario {
     private String cargo;
     private String ativo;
     private LocalDate dtCadastro;
-    private long idLaboratorio;
+    private Long idLaboratorio;
 
     // Construtor SEM ID (usado para INSERT)
-    public Funcionario(String nome, String cpf, String email, String cargo, String ativo, LocalDate dtCadastro, long idLaboratorio) {
+    public Funcionario(String nome, String cpf, String email, String cargo, String ativo, LocalDate dtCadastro, Long idLaboratorio) {
         this.nome = nome;
         this.cpf = cpf;
         this.email = email;
@@ -25,7 +25,7 @@ public class Funcionario {
     }
 
     // Construtor COM ID (usado para SELECT)
-    public Funcionario(Long idFuncionario, String nome, String cpf, String email, String cargo, String ativo, LocalDate dtCadastro, long idLaboratorio) {
+    public Funcionario(Long idFuncionario, String nome, String cpf, String email, String cargo, String ativo, LocalDate dtCadastro, Long idLaboratorio) {
         this.idFuncionario = idFuncionario;
         this.nome = nome;
         this.cpf = cpf;
@@ -48,27 +48,55 @@ public class Funcionario {
         return nome;
     }
 
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
     public String getCpf() {
         return cpf;
+    }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
     }
 
     public String getEmail() {
         return email;
     }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public String getCargo() {
         return cargo;
+    }
+
+    public void setCargo(String cargo) {
+        this.cargo = cargo;
     }
 
     public String getAtivo() {
         return ativo;
     }
 
+    public void setAtivo(String ativo) {
+        this.ativo = ativo;
+    }
+
     public LocalDate getDtCadastro() {
         return dtCadastro;
     }
 
-    public long getIdLaboratorio() {
+    public void setDtCadastro(LocalDate dtCadastro) {
+        this.dtCadastro = dtCadastro;
+    }
+
+    public Long getIdLaboratorio() {
         return idLaboratorio;
+    }
+
+    public void setIdLaboratorio(Long idLaboratorio) {
+        this.idLaboratorio = idLaboratorio;
     }
 }

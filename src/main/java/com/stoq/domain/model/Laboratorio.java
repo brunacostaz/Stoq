@@ -64,4 +64,15 @@ public class Laboratorio {
     public void setDtCadastro(LocalDate dtCadastro) {
         this.dtCadastro = dtCadastro;
     }
+
+    @Override
+    public String toString() {
+        return "Laboratorio{" +
+                "idLab=" + idLab +
+                ", nome='" + nome + '\'' +
+                ", codigo='" + codigo + '\'' +
+                ", ativo='" + ativo + '\'' +
+                ", dtCadastro=" + dtCadastro +
+                '}';
+    }
 }
