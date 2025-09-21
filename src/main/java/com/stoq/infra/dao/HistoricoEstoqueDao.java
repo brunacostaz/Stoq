@@ -1,105 +1,58 @@
 package main.java.com.stoq.infra.dao;
 
-import main.java.com.stoq.domain.model.HistoricoEstoque;
 import main.java.com.stoq.infra.db.OracleConnectionFactory;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class HistoricoEstoqueDao {
 
-    // CREATE (registrar qualquer movimentação)
-    public void insert(HistoricoEstoque historico) {
-        String sql = "INSERT INTO HISTORICO_ESTOQUE " +
-                "(DIA_HISTORICO, LABORATORIO_ID, MATERIAL_ID, " +
-                "QTDE_INICIAL, QTDE_ENTRADAS, QTDE_SAIDAS, QTDE_AJUSTES, QTDE_FINAL) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    // Atualiza valores parciais do dia no histórico
+    public void registrarMovimentacao(long idLab, long idMaterial, float qtde) {
+        String sqlUpdate = "UPDATE HISTORICO_ESTOQUE " +
+                "SET QTDE_FINAL = QTDE_FINAL + ?, " +
+                "    QTDE_ENTRADAS = CASE WHEN ? > 0 THEN QTDE_ENTRADAS + ? ELSE QTDE_ENTRADAS END, " +
+                "    QTDE_SAIDAS   = CASE WHEN ? < 0 THEN QTDE_SAIDAS   + ABS(?) ELSE QTDE_SAIDAS END, " +
+                "    QTDE_AJUSTES  = CASE WHEN ? = 0 THEN QTDE_AJUSTES + 0 ELSE QTDE_AJUSTES END " +
+                "WHERE DIA_HISTORICO = TRUNC(SYSDATE) AND LABORATORIO_ID = ? AND MATERIAL_ID = ?";
+
+        String sqlInsert = "INSERT INTO HISTORICO_ESTOQUE " +
+                "(DIA_HISTORICO, LABORATORIO_ID, MATERIAL_ID, QTDE_INICIAL, " +
+                " QTDE_ENTRADAS, QTDE_SAIDAS, QTDE_AJUSTES, QTDE_FINAL) " +
+                "VALUES (TRUNC(SYSDATE), ?, ?, 0, ?, ?, 0, ?)";
 
         try (Connection conn = OracleConnectionFactory.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sqlUpdate)) {
 
-            stmt.setDate(1, Date.valueOf(historico.getDiaHistorico()));
-            stmt.setLong(2, historico.getIdLaboratorio());
-            stmt.setLong(3, historico.getIdMaterial());
-            stmt.setFloat(4, historico.getQtdeInicial());
-            stmt.setFloat(5, historico.getQtdeEntradas());
-            stmt.setFloat(6, historico.getQtdeSaidas());
-            stmt.setFloat(7, historico.getQtdeAjustes());
-            stmt.setFloat(8, historico.getQtdeFinal());
+            stmt.setFloat(1, qtde);
+            stmt.setFloat(2, qtde);
+            stmt.setFloat(3, qtde);
+            stmt.setFloat(4, qtde);
+            stmt.setFloat(5, qtde);
+            stmt.setFloat(6, qtde);
+            stmt.setLong(7, idLab);
+            stmt.setLong(8, idMaterial);
 
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException("Erro ao inserir histórico de estoque", e);
-        }
-    }
+            int rows = stmt.executeUpdate();
 
-    // READ ID
-    public HistoricoEstoque findById(Long id) {
-        String sql = "SELECT * FROM HISTORICO_ESTOQUE WHERE ID_HISTORICO = ?";
-        try (Connection conn = OracleConnectionFactory.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setLong(1, id);
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                return new HistoricoEstoque(
-                        rs.getLong("ID_HISTORICO"),
-                        rs.getDate("DIA_HISTORICO").toLocalDate(),
-                        rs.getLong("LABORATORIO_ID"),
-                        rs.getLong("MATERIAL_ID"),
-                        rs.getFloat("QTDE_INICIAL"),
-                        rs.getFloat("QTDE_ENTRADAS"),
-                        rs.getFloat("QTDE_SAIDAS"),
-                        rs.getFloat("QTDE_AJUSTES"),
-                        rs.getFloat("QTDE_FINAL")
-                );
+            if (rows == 0) { // se não existia histórico hoje, insere
+                try (PreparedStatement insertStmt = conn.prepareStatement(sqlInsert)) {
+                    insertStmt.setLong(1, idLab);
+                    insertStmt.setLong(2, idMaterial);
+                    insertStmt.setFloat(3, qtde > 0 ? qtde : 0); // entradas
+                    insertStmt.setFloat(4, qtde < 0 ? Math.abs(qtde) : 0); // saídas
+                    insertStmt.setFloat(5, qtde); // saldo final
+                    insertStmt.executeUpdate();
+                }
             }
+
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao buscar histórico por ID", e);
+            throw new RuntimeException("Erro ao registrar movimentação no histórico", e);
         }
-        return null;
     }
 
-    // READ ALL
-    public List<HistoricoEstoque> findAll() {
-        List<HistoricoEstoque> lista = new ArrayList<>();
-        String sql = "SELECT * FROM HISTORICO_ESTOQUE ORDER BY DIA_HISTORICO DESC";
-
-        try (Connection conn = OracleConnectionFactory.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-
-            while (rs.next()) {
-                HistoricoEstoque h = new HistoricoEstoque(
-                        rs.getLong("ID_HISTORICO"),
-                        rs.getDate("DIA_HISTORICO").toLocalDate(),
-                        rs.getLong("LABORATORIO_ID"),
-                        rs.getLong("MATERIAL_ID"),
-                        rs.getFloat("QTDE_INICIAL"),
-                        rs.getFloat("QTDE_ENTRADAS"),
-                        rs.getFloat("QTDE_SAIDAS"),
-                        rs.getFloat("QTDE_AJUSTES"),
-                        rs.getFloat("QTDE_FINAL")
-                );
-                lista.add(h);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("Erro ao listar históricos de estoque", e);
-        }
-        return lista;
-    }
-
-    // DELETE (se precisar remover algo)
-    public void delete(Long id) {
-        String sql = "DELETE FROM HISTORICO_ESTOQUE WHERE ID_HISTORICO = ?";
-        try (Connection conn = OracleConnectionFactory.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setLong(1, id);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException("Erro ao deletar histórico de estoque", e);
-        }
+    // Fecha o dia (caso queira rodar em batch no final do dia)
+    public void fecharDia(java.time.LocalDate dia) {
+        // Aqui você pode implementar uma query que copia saldo do ESTOQUE para HISTORICO_ESTOQUE
+        // Exemplo: INSERT INTO HISTORICO_ESTOQUE (...) SELECT ... FROM ESTOQUE WHERE DIA = ?
     }
 }
