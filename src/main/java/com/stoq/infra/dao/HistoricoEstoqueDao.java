@@ -2,57 +2,40 @@ package main.java.com.stoq.infra.dao;
 
 import main.java.com.stoq.infra.db.OracleConnectionFactory;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.time.LocalDate;
 
 public class HistoricoEstoqueDao {
 
-    // Atualiza valores parciais do dia no histórico
-    public void registrarMovimentacao(long idLab, long idMaterial, float qtde) {
-        String sqlUpdate = "UPDATE HISTORICO_ESTOQUE " +
-                "SET QTDE_FINAL = QTDE_FINAL + ?, " +
-                "    QTDE_ENTRADAS = CASE WHEN ? > 0 THEN QTDE_ENTRADAS + ? ELSE QTDE_ENTRADAS END, " +
-                "    QTDE_SAIDAS   = CASE WHEN ? < 0 THEN QTDE_SAIDAS   + ABS(?) ELSE QTDE_SAIDAS END, " +
-                "    QTDE_AJUSTES  = CASE WHEN ? = 0 THEN QTDE_AJUSTES + 0 ELSE QTDE_AJUSTES END " +
-                "WHERE DIA_HISTORICO = TRUNC(SYSDATE) AND LABORATORIO_ID = ? AND MATERIAL_ID = ?";
-
-        String sqlInsert = "INSERT INTO HISTORICO_ESTOQUE " +
-                "(DIA_HISTORICO, LABORATORIO_ID, MATERIAL_ID, QTDE_INICIAL, " +
-                " QTDE_ENTRADAS, QTDE_SAIDAS, QTDE_AJUSTES, QTDE_FINAL) " +
-                "VALUES (TRUNC(SYSDATE), ?, ?, 0, ?, ?, 0, ?)";
+    /**
+     * Copia os saldos atuais da tabela ESTOQUE para o HISTORICO_ESTOQUE,
+     * gerando um consolidado diário
+     *
+     * @param dia Data do fechamento (normalmente LocalDate.now()).
+     */
+    public void copiarEstoqueParaHistorico(LocalDate dia) {
+        String sql = "INSERT INTO HISTORICO_ESTOQUE (" +
+                "DIA_HISTORICO, LABORATORIO_ID, MATERIAL_ID, " +
+                "QTDE_INICIAL, QTDE_ENTRADAS, QTDE_SAIDAS, QTDE_AJUSTES, QTDE_FINAL) " +
+                "SELECT ?, e.LABORATORIO_ID, e.MATERIAL_ID, " +
+                "0, 0, 0, 0, e.QTDE " +
+                "FROM ESTOQUE e " +
+                "WHERE e.DIA = ?";
 
         try (Connection conn = OracleConnectionFactory.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sqlUpdate)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setFloat(1, qtde);
-            stmt.setFloat(2, qtde);
-            stmt.setFloat(3, qtde);
-            stmt.setFloat(4, qtde);
-            stmt.setFloat(5, qtde);
-            stmt.setFloat(6, qtde);
-            stmt.setLong(7, idLab);
-            stmt.setLong(8, idMaterial);
+            java.sql.Date sqlDate = java.sql.Date.valueOf(dia);
+            stmt.setDate(1, sqlDate); // DIA_HISTORICO
+            stmt.setDate(2, sqlDate); // WHERE DIA = ?
 
             int rows = stmt.executeUpdate();
-
-            if (rows == 0) { // se não existia histórico hoje, insere
-                try (PreparedStatement insertStmt = conn.prepareStatement(sqlInsert)) {
-                    insertStmt.setLong(1, idLab);
-                    insertStmt.setLong(2, idMaterial);
-                    insertStmt.setFloat(3, qtde > 0 ? qtde : 0); // entradas
-                    insertStmt.setFloat(4, qtde < 0 ? Math.abs(qtde) : 0); // saídas
-                    insertStmt.setFloat(5, qtde); // saldo final
-                    insertStmt.executeUpdate();
-                }
-            }
+            System.out.println("Histórico consolidado: " + rows + " linhas inseridas para o dia " + dia);
 
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao registrar movimentação no histórico", e);
+            throw new RuntimeException("Erro ao consolidar estoque no histórico", e);
         }
-    }
-
-    // Fecha o dia (caso queira rodar em batch no final do dia)
-    public void fecharDia(java.time.LocalDate dia) {
-        // Aqui você pode implementar uma query que copia saldo do ESTOQUE para HISTORICO_ESTOQUE
-        // Exemplo: INSERT INTO HISTORICO_ESTOQUE (...) SELECT ... FROM ESTOQUE WHERE DIA = ?
     }
 }

@@ -1,5 +1,6 @@
 package main.java.com.stoq.infra.dao;
 
+import main.java.com.stoq.domain.model.PedidoItens;
 import main.java.com.stoq.infra.db.OracleConnectionFactory;
 import main.java.com.stoq.domain.model.Pedido;
 
@@ -125,5 +126,33 @@ public class PedidoDao {
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao deletar pedido", e);
         }
+    }
+
+    public List<PedidoItens> buscarItensDoPedido(long pedidoId) {
+        List<PedidoItens> itens = new ArrayList<>();
+        String sql = "SELECT * FROM PEDIDO_ITENS WHERE PEDIDO_ID = ?";
+
+        try (Connection conn = OracleConnectionFactory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setLong(1, pedidoId);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                PedidoItens item = new PedidoItens(
+                        rs.getLong("PEDIDO_ID"),
+                        rs.getLong("MATERIAL_ID"),
+                        rs.getFloat("QTDE_SOLICITADA"),
+                        rs.getFloat("QTDE_RECEBIDA"),
+                        rs.getFloat("PRECO_UNITARIO"),
+                        rs.getString("LOTE"),
+                        rs.getDate("VALIDADE") != null ? rs.getDate("VALIDADE").toLocalDate() : null
+                );
+                itens.add(item);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao buscar itens do pedido", e);
+        }
+        return itens;
     }
 }

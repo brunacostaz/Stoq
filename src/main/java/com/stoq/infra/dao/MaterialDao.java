@@ -39,15 +39,7 @@ public class MaterialDao {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                return new Material(
-                        rs.getLong("ID_MATERIAL"),
-                        rs.getString("NOME"),
-                        rs.getString("ID_LOTE"),
-                        rs.getString("UNIDADE_MEDIDA"),
-                        rs.getInt("ESTOQUE_MINIMO"),
-                        rs.getString("DESCRICAO"),
-                        rs.getString("ATIVO")
-                );
+                return mapResultSetToMaterial(rs);
             }
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao buscar material por id", e);
@@ -64,21 +56,42 @@ public class MaterialDao {
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
-                Material material = new Material(
-                        rs.getLong("ID_MATERIAL"),
-                        rs.getString("NOME"),
-                        rs.getString("ID_LOTE"),
-                        rs.getString("UNIDADE_MEDIDA"),
-                        rs.getInt("ESTOQUE_MINIMO"),
-                        rs.getString("DESCRICAO"),
-                        rs.getString("ATIVO")
-                );
-                lista.add(material);
+                lista.add(mapResultSetToMaterial(rs));
             }
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao listar materiais", e);
         }
         return lista;
+    }
+
+    // Buscar vários materiais por IDs
+    public List<Material> findByIds(List<Long> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        String placeholders = String.join(",", ids.stream().map(id -> "?").toArray(String[]::new));
+        String sql = "SELECT * FROM MATERIAIS WHERE ID_MATERIAL IN (" + placeholders + ")";
+
+        List<Material> materiais = new ArrayList<>();
+
+        try (Connection conn = OracleConnectionFactory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            for (int i = 0; i < ids.size(); i++) {
+                stmt.setLong(i + 1, ids.get(i));
+            }
+
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                materiais.add(mapResultSetToMaterial(rs));
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao buscar materiais por IDs", e);
+        }
+
+        return materiais;
     }
 
     // UPDATE
@@ -113,5 +126,55 @@ public class MaterialDao {
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao deletar material", e);
         }
+    }
+
+    // Helper para mapear ResultSet em Material
+    private Material mapResultSetToMaterial(ResultSet rs) throws SQLException {
+        return new Material(
+                rs.getLong("ID_MATERIAL"),
+                rs.getString("NOME"),
+                rs.getString("ID_LOTE"),
+                rs.getString("UNIDADE_MEDIDA"),
+                rs.getInt("ESTOQUE_MINIMO"),
+                rs.getString("DESCRICAO"),
+                rs.getString("ATIVO")
+        );
+    }
+
+    // Busca materiais que estão abaixo do estoque mínimo em um laboratório
+    public List<Material> findMateriaisAbaixoEstoqueMinimo(long laboratorioId) {
+        String sql = """
+        SELECT m.* 
+        FROM MATERIAIS m
+        JOIN ESTOQUE e ON m.ID_MATERIAL = e.MATERIAL_ID
+        WHERE e.LABORATORIO_ID = ? AND e.QTDE <= m.ESTOQUE_MINIMO
+    """;
+
+        List<Material> lista = new ArrayList<>();
+
+        try (Connection conn = OracleConnectionFactory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setLong(1, laboratorioId);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Material material = new Material(
+                        rs.getLong("ID_MATERIAL"),
+                        rs.getString("NOME"),
+                        rs.getString("ID_LOTE"),
+                        rs.getString("UNIDADE_MEDIDA"),
+                        rs.getInt("ESTOQUE_MINIMO"),
+                        rs.getString("DESCRICAO"),
+                        rs.getString("ATIVO")
+                );
+                lista.add(material);
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao buscar materiais abaixo do estoque mínimo", e);
+        }
+
+        return lista;
     }
 }

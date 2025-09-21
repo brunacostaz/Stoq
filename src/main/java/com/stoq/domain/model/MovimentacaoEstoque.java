@@ -9,12 +9,12 @@ public class MovimentacaoEstoque {
     private String tipoMovimentacao;
     private long idLab;
     private long idItem;
-    private long idQRCode;
+    private Long idQRCode;
     private long idFuncionario;
     private float qntde;
     private String obs;
 
-    public MovimentacaoEstoque(long idMovimentacao, LocalDate dataMovimentacao, String tipoMovimentacao, long idLab, long idItem, long idQRCode, long idFuncionario, float qntde, String obs) {
+    public MovimentacaoEstoque(long idMovimentacao, LocalDate dataMovimentacao, String tipoMovimentacao, long idLab, long idItem, Long idQRCode, long idFuncionario, float qntde, String obs) {
         this.idMovimentacao = idMovimentacao;
         this.dataMovimentacao = dataMovimentacao;
         this.tipoMovimentacao = tipoMovimentacao;
@@ -26,7 +26,7 @@ public class MovimentacaoEstoque {
         this.obs = obs;
     }
 
-    public MovimentacaoEstoque(LocalDate dataMovimentacao, String tipoMovimentacao, long idLab, long idItem, long idQRCode, long idFuncionario, float qntde, String obs) {
+    public MovimentacaoEstoque(LocalDate dataMovimentacao, String tipoMovimentacao, long idLab, long idItem, Long idQRCode, long idFuncionario, float qntde, String obs) {
         this.idMovimentacao = idMovimentacao;
         this.dataMovimentacao = dataMovimentacao;
         this.tipoMovimentacao = tipoMovimentacao;
@@ -78,11 +78,11 @@ public class MovimentacaoEstoque {
         this.idItem = idItem;
     }
 
-    public long getIdQRCode() {
+    public Long getIdQRCode() {
         return idQRCode;
     }
 
-    public void setIdQRCode(long idQRCode) {
+    public void setIdQRCode(Long idQRCode) {
         this.idQRCode = idQRCode;
     }
 

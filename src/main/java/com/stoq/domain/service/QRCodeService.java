@@ -4,7 +4,7 @@ import main.java.com.stoq.domain.model.Funcionario;
 import main.java.com.stoq.domain.model.QRCode;
 import main.java.com.stoq.domain.model.Consulta;
 import main.java.com.stoq.domain.model.Material;
-import main.java.com.stoq.domain.service.EstoqueService;
+import main.java.com.stoq.domain.model.PedidoItens;
 import main.java.com.stoq.infra.dao.QRCodeDao;
 import main.java.com.stoq.infra.dao.ConsultaDao;
 import main.java.com.stoq.infra.dao.PresetMaterialDao;
@@ -37,9 +37,7 @@ public class QRCodeService {
     }
 
     /**
-     * Esse método é responsável por:
-     * - Gerar o QRCode quando o enfermeiro seleciona uma consulta e clica em buscar materiais
-     * - Retornar o QRCode para o front mostrar na tela
+     * Enfermeiro gera QRCode para a consulta selecionada
      */
     public QRCode gerarQRCode(Long consultaId, Funcionario enfermeiro) {
         if (!"ENFERMEIRO".equalsIgnoreCase(enfermeiro.getCargo())) {
@@ -64,14 +62,11 @@ public class QRCodeService {
         );
 
         qrCodeDao.insert(qr);
-
         return qr;
     }
 
     /**
-     * Esse método é responsável por:
-     * - Permitir que o admin valide o QR code quando o enfeimeiro for retirar os materiais
-     * - Chamar o serviço do estoque para retirar os materiais no banco de dados
+     * Admin valida QRCode → retira materiais do estoque
      */
     public void validarQRCode(Long qrCodeId, Funcionario admin) {
         if (!"ADMIN".equalsIgnoreCase(admin.getCargo())) {
@@ -89,16 +84,28 @@ public class QRCodeService {
 
         qrCodeDao.update(qr);
 
+        // Consulta associada
+        Consulta consulta = consultaDao.findById(qr.getIdConsulta());
+        if (consulta == null) {
+            throw new RuntimeException("Consulta associada ao QRCode não encontrada.");
+        }
+
+        // Busca materiais e quantidades do preset
+        List<PedidoItens> materiaisRetirados = presetMaterialDao.findMateriaisComQtde(consulta.getIdPreset());
+
         // Chama retirada do estoque
-        estoqueService.retiradaEstoque(qrCodeId);
+        estoqueService.retiradaEstoque(
+                qr.getIdLaboratorio(),
+                qr.getIdEnfermeiro(),
+                qrCodeId,
+                materiaisRetirados
+        );
     }
 
     /**
-     * Esse método é responsável por:
-     * - exibir os materiais cadastrados no qrcode para o enfeimeiro e admin
+     * Lista materiais do preset associado ao QRCode (para admin visualizar)
      */
     public List<Material> listarMateriaisDoQRCode(Long qrCodeId) {
-
         QRCode qr = qrCodeDao.findById(qrCodeId);
         if (qr == null) {
             throw new RuntimeException("QRCode não encontrado.");

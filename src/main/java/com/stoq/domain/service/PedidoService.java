@@ -71,7 +71,6 @@ public class PedidoService {
         //Cria cabeçalho do pedido
         String numero = gerarNumero();
         Pedido cabecalho = new Pedido(
-                null,                 // id_pedido (PK gerada no banco)
                 numero,               // numero
                 idLaboratorio,        // laboratorio_id
                 solicitante.getIdFuncionario(), // funcionario_id
