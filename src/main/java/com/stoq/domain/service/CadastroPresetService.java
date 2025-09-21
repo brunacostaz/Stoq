@@ -3,6 +3,7 @@ package main.java.com.stoq.domain.service;
 import main.java.com.stoq.domain.model.Funcionario;
 import main.java.com.stoq.domain.model.Material;
 import main.java.com.stoq.domain.model.Preset;
+import main.java.com.stoq.domain.model.PresetMaterial;
 import main.java.com.stoq.infra.dao.MaterialDao;
 import main.java.com.stoq.infra.dao.PresetDao;
 import main.java.com.stoq.infra.dao.PresetMaterialDao;
@@ -30,20 +31,15 @@ public class CadastroPresetService {
 
     // ========== Preset: CRUD & status ==========
 
-    /**
-     * Cria um preset e, opcionalmente, os itens (materialId -> qtde_por_exame).
-     */
     public void criar(Funcionario solicitante, Preset preset, Map<Long, Float> itens) {
         exigirAdminOuGestor(solicitante);
         validarNovoPreset(preset);
         exigirCodigoUnico(preset.getCodigo(), null);
 
-        // ativo default
         if (preset.getAtivo() == null || preset.getAtivo().isBlank()) preset.setAtivo("S");
 
         presetDao.insert(preset);
 
-        // resolver id do preset recém-criado (se o insert não retornar PK)
         Long idPreset = resolverIdPorCodigo(preset.getCodigo());
         if (idPreset == null) throw new RuntimeException("Falha ao resolver ID do preset recém-criado.");
 
@@ -52,9 +48,6 @@ public class CadastroPresetService {
         }
     }
 
-    /**
-     * Atualiza campos do preset (nome, codigo, descricao, ativo).
-     */
     public void atualizar(Funcionario solicitante, Long idPreset, Preset dados) {
         exigirAdminOuGestor(solicitante);
         Preset atual = obterPresetObrigatorio(idPreset);
@@ -87,24 +80,15 @@ public class CadastroPresetService {
         presetDao.update(p);
     }
 
-    /**
-     * Exclusão do preset e de suas associações.
-     */
     public void deletar(Funcionario solicitante, Long idPreset) {
         exigirAdminOuGestor(solicitante);
-        obterPresetObrigatorio(idPreset); // valida existência
-        // apaga associações
+        obterPresetObrigatorio(idPreset);
         removerTodosItens(idPreset);
-        // apaga preset
         presetDao.delete(idPreset);
     }
 
-    // ========== Preset: Itens (preset_materiais) ==========
+    // ========== Preset: Itens ==========
 
-    /**
-     * Substitui COMPLETAMENTE os itens do preset.
-     * @param itens Map<materialId, qtde_por_exame>
-     */
     public void definirItens(Funcionario solicitante, Long idPreset, Map<Long, Float> itens) {
         exigirAdminOuGestor(solicitante);
         obterPresetObrigatorio(idPreset);
@@ -112,42 +96,33 @@ public class CadastroPresetService {
         if (itens == null || itens.isEmpty())
             throw new RuntimeException("A lista de itens não pode ser vazia.");
 
-        // valida materiais e quantidades
         for (Map.Entry<Long, Float> e : itens.entrySet()) {
-            Long idMat = e.getKey();
-            Float qtd = e.getValue();
-            validarMaterialExiste(idMat);
-            validarQtdePorExame(qtd);
+            validarMaterialExiste(e.getKey());
+            validarQtdePorExame(e.getValue());
         }
 
-        // remove tudo e reinsere
         removerTodosItens(idPreset);
         for (Map.Entry<Long, Float> e : itens.entrySet()) {
-            presetMaterialDao.insert(idPreset, e.getKey(), e.getValue());
+            PresetMaterial pm = new PresetMaterial(idPreset, e.getKey(), e.getValue());
+            presetMaterialDao.insert(pm);
         }
     }
 
-    /**
-     * Adiciona ou atualiza um único item (material) do preset.
-     */
     public void adicionarOuAtualizarItem(Funcionario solicitante, Long idPreset, Long idMaterial, float qtdePorExame) {
         exigirAdminOuGestor(solicitante);
         obterPresetObrigatorio(idPreset);
         validarMaterialExiste(idMaterial);
         validarQtdePorExame(qtdePorExame);
 
-        // se já existe, atualiza; se não, insere
-        Float atual = presetMaterialDao.findQtdeByPresetAndMaterial(idPreset, idMaterial);
-        if (atual == null) {
-            presetMaterialDao.insert(idPreset, idMaterial, qtdePorExame);
+        PresetMaterial existente = presetMaterialDao.findById(idPreset, idMaterial);
+        if (existente == null) {
+            presetMaterialDao.insert(new PresetMaterial(idPreset, idMaterial, qtdePorExame));
         } else {
-            presetMaterialDao.updateQtde(idPreset, idMaterial, qtdePorExame);
+            existente.setQtdePorExame(qtdePorExame);
+            presetMaterialDao.update(existente);
         }
     }
 
-    /**
-     * Remove um material do preset.
-     */
     public void removerItem(Funcionario solicitante, Long idPreset, Long idMaterial) {
         exigirAdminOuGestor(solicitante);
         obterPresetObrigatorio(idPreset);
@@ -155,18 +130,15 @@ public class CadastroPresetService {
         presetMaterialDao.delete(idPreset, idMaterial);
     }
 
-    /**
-     * Lista itens do preset em forma de Map<materialId, qtde_por_exame>.
-     */
     public Map<Long, Float> listarItens(Long idPreset) {
         obterPresetObrigatorio(idPreset);
-        // se tiver método pronto no DAO que retorna pares (materialId, qtde), use-o.
-        // como fallback, carrego IDs e converto para Map
         List<Long> materiais = presetMaterialDao.findMateriaisByPresetId(idPreset);
         Map<Long, Float> mapa = new LinkedHashMap<>();
         for (Long idMat : materiais) {
-            Float qtd = presetMaterialDao.findQtdeByPresetAndMaterial(idPreset, idMat);
-            if (qtd != null) mapa.put(idMat, qtd);
+            PresetMaterial pm = presetMaterialDao.findById(idPreset, idMat);
+            if (pm != null) {
+                mapa.put(idMat, pm.getQtdePorExame());
+            }
         }
         return mapa;
     }
@@ -206,7 +178,6 @@ public class CadastroPresetService {
         if (p == null) throw new RuntimeException("Dados do preset são obrigatórios.");
         exigir(naoVazio(p.getNome()), "nome");
         exigir(naoVazio(p.getCodigo()), "codigo");
-        // ativo opcional; validamos se vier
         if (p.getAtivo() != null) validarAtivo(p.getAtivo());
     }
 
@@ -247,7 +218,6 @@ public class CadastroPresetService {
     }
 
     private void removerTodosItens(Long idPreset) {
-        // se não houver deleteByPreset no DAO, fazemos via lista de materiais
         List<Long> mats = presetMaterialDao.findMateriaisByPresetId(idPreset);
         for (Long idMat : mats) presetMaterialDao.delete(idPreset, idMat);
     }
