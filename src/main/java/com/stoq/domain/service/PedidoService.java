@@ -79,6 +79,7 @@ public class PedidoService {
                 null,                 // dt_recebimento
                 "Exemplo Fornecedor"                  // fornecedor_nome
         );
+
         pedidoDao.insert(cabecalho);
 
         // ID do pedido recém-criado pelo NUMERO
@@ -88,9 +89,21 @@ public class PedidoService {
 
         // Persiste itens em PEDIDO_ITENS
         for (PedidoItens it : itens) {
+
             it.setIdPedido(idPedido);
+            // DEBUG para verificar duplicação
+            System.out.printf(
+                    "[DEBUG] Inserindo PedidoItens -> Pedido_ID: %d | Material_ID: %d | QtdeSolicitada: %.2f | QtdeRecebida: %.2f%n",
+                    it.getIdPedido(),
+                    it.getIdMaterial(),
+                    it.getQtdeSolicitada(),
+                    it.getQntdeRecebida()
+            );
             pedidoItensDao.insert(it);
+
         }
+
+
 
         return idPedido;
     }

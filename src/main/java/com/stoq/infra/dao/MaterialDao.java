@@ -144,7 +144,7 @@ public class MaterialDao {
     // Busca materiais que estão abaixo do estoque mínimo em um laboratório
     public List<Material> findMateriaisAbaixoEstoqueMinimo(long laboratorioId) {
         String sql = """
-        SELECT m.* 
+        SELECT DISTINCT m.* 
         FROM MATERIAIS m
         JOIN ESTOQUE e ON m.ID_MATERIAL = e.MATERIAL_ID
         WHERE e.LABORATORIO_ID = ? AND e.QTDE <= m.ESTOQUE_MINIMO
