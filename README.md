@@ -1,4 +1,4 @@
-# Vamos gerar o conteúdo do README.md em formato de arquivo Markdown para o usuário baixar
+# Stoq
 
 readme_content = """# 📦 Stoq – Sistema de Gestão de Estoque em Laboratórios  
 
