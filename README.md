@@ -1,6 +1,6 @@
 # Stoq
 
-readme_content = """# 📦 Stoq – Sistema de Gestão de Estoque em Laboratórios  
+📦 Sistema de Gestão de Estoque em Laboratórios  
 
 ## 📖 Visão Geral  
 O **Stoq** é um sistema desenvolvido em **Java** com conexão a banco de dados **Oracle**, cujo objetivo é melhorar o **controle de estoque em laboratórios de diagnóstico**.  
